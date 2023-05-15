@@ -1,0 +1,12 @@
+{
+  "name": "vea-lightbulb",
+  "version": "1.0.0",
+  "private": true,
+  "description": "cross-chain decentralized lightbulb",
+  "license": "MIT",
+  "workspaces": [
+    "contracts",
+    "subgraph",
+    "ui"
+  ]
+}

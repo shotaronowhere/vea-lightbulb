@@ -1,0 +1,44 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "interfaces/ILightBulb.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n\n/**\n *  @authors: [@shotaronowhere]\n *  @reviewers: []\n *  @auditors: []\n *  @bounties: []\n *  @deployments: []\n */\n\npragma solidity ^0.8.0;\n\ninterface ILightBulb {\n    /**\n    * @dev Toggles the lightbulb on or off.\n    * @param _msgSender The address of the sender on the L2 side.\n    * @param lightBulbOwner The address of the owner of the lightbulb on the L2 side.\n    */\n    function turnOn(address _msgSender, address lightBulbOwner) external;\n}\n"
+    },
+    "interfaces/IVeaInbox.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n\n/**\n *  @authors: [@jaybuidl, @shotaronowhere]\n *  @reviewers: []\n *  @auditors: []\n *  @bounties: []\n *  @deployments: []\n */\n\npragma solidity ^0.8.0;\n\ninterface IVeaInbox {\n    /**\n     * @dev Sends an arbitrary message to Ethereum.\n     * @param to The cross-domain contract address which receives the calldata.\n     * @param fnSelection The function selector of the receiving contract.\n     * @param data The message calldata, abi.encode(...)\n     * @return msgId The index of the message in the inbox, as a message Id, needed to relay the message.\n     */\n    function sendMessage(address to, bytes4 fnSelection, bytes memory data) external returns (uint64 msgId);\n}\n"
+    },
+    "src/LightBulb.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n\n/**\n *  @authors: [@shotaronowhere]\n *  @reviewers: []\n *  @auditors: []\n *  @bounties: []\n *  @deployments: []\n */\n\npragma solidity ^0.8.0;\n\n/**\n * @title LightBulb\n * @dev A lightbulb on ethereum controlled by a switch on Arbitrum with the Vea bridge.\n **/\n \ncontract LightBulb{\n    \n    address public immutable veaOutbox; // vea bridge on L1\n    address public immutable lightBulbSwitch; // The switch on arbitrum that controls this lightbulb.\n    mapping (address=>bool) public lightBulbIsOn;\n    \n    constructor(address _veaOutbox, address _lightBulbSwitch) {\n        veaOutbox = _veaOutbox;\n        lightBulbSwitch = _lightBulbSwitch;\n    }\n\n    modifier onlyAuthenticatedFromVea(address _msgSender) {\n        require(msg.sender == veaOutbox, \"L1 Auth: Only Vea Bridge.\");\n        require(_msgSender == lightBulbSwitch, \"L2 Auth: Only the switch can turn on the lightbulb.\");\n        _;\n    }\n\n    /**\n    * @dev Toggles the lightbulb on or off.\n    * @param _msgSender The address of the sender on the L2 side.\n    * @param lightBulbOwner The address of the owner of the lightbulb on the L2 side.\n    */\n    function turnOn(address _msgSender, address lightBulbOwner) external onlyAuthenticatedFromVea(_msgSender) {\n        // lightBulbOwner authentication is done on the L2 switch side.\n        lightBulbIsOn[lightBulbOwner] = true;\n    }\n}"
+    },
+    "src/Switch.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n\n/**\n *  @authors: [@shotaronowhere]\n *  @reviewers: []\n *  @auditors: []\n *  @bounties: []\n *  @deployments: []\n */\n\npragma solidity ^0.8.0;\n\nimport \"../interfaces/IVeaInbox.sol\";\nimport \"../interfaces/ILightBulb.sol\";\n\n/**\n * @title Lightbulb\n * @dev A switch on arbitrum turning a light on and off on arbitrum with the Vea bridge.\n */\ncontract Switch{\n\n    IVeaInbox public immutable veaInbox; // vea inbox on arbitrum\n    address public immutable lightBulb; // gateway on goerli\n\n    /**\n     * @dev The Fast Bridge participants watch for these events to decide if a challenge should be submitted.\n     * @param messageId The id of the message sent to the lightbulb.\n     * @param lightBulbOwner The address of the owner of the lightbulb on the L2 side.\n     */\n    event lightBulbToggled(uint64 messageId, address lightBulbOwner);\n\n    constructor(address _veaInbox, address _lightBulb) {\n        veaInbox = IVeaInbox(_veaInbox);\n        lightBulb = _lightBulb;\n    }\n\n    function turnOnLightBulb() external {\n        bytes memory _msgData = abi.encode(msg.sender);\n        uint64 msgId = veaInbox.sendMessage(lightBulb, ILightBulb.turnOn.selector, _msgData);\n        emit lightBulbToggled(msgId, msg.sender);\n    }\n}"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}

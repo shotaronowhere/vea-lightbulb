@@ -1,0 +1,37 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/LightBulb.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n\n/**\n *  @authors: [@shotaronowhere]\n *  @reviewers: []\n *  @auditors: []\n *  @bounties: []\n *  @deployments: []\n */\n\npragma solidity ^0.8.0;\n\n/**\n * @title LightBulb\n * @dev A lightbulb on ethereum controlled by a switch on Arbitrum with the Vea bridge.\n **/\n \ncontract LightBulb{\n    \n    address public immutable bridge; // vea bridge on L1\n    address public immutable lightBulbSwitch; // The switch on arbitrum that controls this lightbulb.\n    bool public globalLighbulb;\n    mapping (address=>bool) public lightBulbIsOn;\n    \n    constructor(address _bridge, address _lightBulbSwitch) {\n        bridge = _bridge;\n        lightBulbSwitch = _lightBulbSwitch;\n    }\n\n    modifier onlyAuthenticatedFromVea(address _msgSender) {\n        require(msg.sender == bridge, \"L1 Auth: Only Vea Bridge.\");\n        require(_msgSender == lightBulbSwitch, \"L2 Auth: Only the switch can turn on the lightbulb.\");\n        _;\n    }\n\n    /**\n    * @dev Toggles the lightbulb on or off.\n    * @param _msgSender The address of the sender on the L2 side.\n    * @param lightBulbOwner The address of the owner of the lightbulb on the L2 side.\n    */\n    function toggleMyLightBulb(address _msgSender, address lightBulbOwner) external onlyAuthenticatedFromVea(_msgSender) {\n        // lightBulbOwner authentication is done on the L2 switch side.\n        lightBulbIsOn[lightBulbOwner] = !lightBulbIsOn[lightBulbOwner];\n    }\n\n    /**\n    * @dev Toggles the global lightbulb on or off.\n    * @param _msgSender The address of the sender on the L2 side.\n    */\n    function toggleGlobalLightBulb(address _msgSender) external onlyAuthenticatedFromVea(_msgSender){\n        // lightbulb is global, no owner authentication is needed.\n        globalLighbulb = !globalLighbulb;\n    }\n}"
+    },
+    "contracts/Switch.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n\n/**\n *  @authors: [@shotaronowhere]\n *  @reviewers: []\n *  @auditors: []\n *  @bounties: []\n *  @deployments: []\n */\n\npragma solidity ^0.8.0;\n\nimport \"../interfaces/IVeaBridgeSender.sol\";\nimport \"../interfaces/ILightBulb.sol\";\n\n/**\n * @title Lightbulb\n * @dev A switch on arbitrum turning a light on and off on arbitrum with the Vea bridge.\n */\ncontract Switch{\n\n    IVeaBridgeSender public immutable bridge; // vea bridge sender on arbitrum\n    address public immutable lightBulb; // vea bridge sender on arbitrum\n\n    constructor(IVeaBridgeSender _bridge, address _lightBulb) {\n        bridge = _bridge;\n        lightBulb = _lightBulb;\n    }\n\n    function toggleMyLightBulb() external {\n        bytes memory _calldata = abi.encodeWithSelector(ILightBulb.toggleMyLightBulb.selector, msg.sender);\n        bridge.sendFast(lightBulb, _calldata);\n    }\n\n    function toggleGlobalLightBulb() external {\n        bytes memory _calldata = abi.encodeWithSelector(ILightBulb.toggleGlobalLightBulb.selector);\n        bridge.sendFast(lightBulb, _calldata);\n    }\n}"
+    },
+    "interfaces/ILightBulb.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n\n/**\n *  @authors: [@shotaronowhere]\n *  @reviewers: []\n *  @auditors: []\n *  @bounties: []\n *  @deployments: []\n */\n\npragma solidity ^0.8.0;\n\ninterface ILightBulb {\n    /**\n    * @dev Toggles the lightbulb on or off.\n    * @param _msgSender The address of the sender on the L2 side.\n    * @param lightBulbOwner The address of the owner of the lightbulb on the L2 side.\n    */\n    function toggleMyLightBulb(address _msgSender, address lightBulbOwner) external;\n    /**\n    * @dev Toggles the global lightbulb on or off.\n    * @param _msgSender The address of the sender on the L2 side.\n    */\n    function toggleGlobalLightBulb(address _msgSender) external;\n}\n"
+    },
+    "interfaces/IVeaBridgeSender.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n\n/**\n *  @authors: [@shotaronowhere]\n *  @reviewers: []\n *  @auditors: []\n *  @bounties: []\n *  @deployments: []\n */\n\npragma solidity ^0.8.0;\n\ninterface IVeaBridgeSender {\n    /**\n     * Note: Access must be restricted by the receiving gateway by checking the sender argument.\n     * @dev Sends an arbitrary message across domain using the Fast Bridge.\n     * @param _receiver The cross-domain contract address which receives the calldata.\n     * @param _calldata The receiving domain encoded message data.\n     */\n    function sendFast(address _receiver, bytes memory _calldata) external;\n}\n"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    }
+  }
+}
