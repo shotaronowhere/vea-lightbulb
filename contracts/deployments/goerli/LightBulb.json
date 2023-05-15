@@ -1,0 +1,160 @@
+{
+  "address": "0x0DF02C42860a5e29BFDaa0F89e86e8e25074571e",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_veaOutbox",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_lightBulbSwitch",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "lightBulbIsOn",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "lightBulbSwitch",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_msgSender",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "lightBulbOwner",
+          "type": "address"
+        }
+      ],
+      "name": "turnOn",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "veaOutbox",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x08528f14cada941e0240488bcc68e0f97c26bc48187d7988df363a0e11a633a9",
+  "receipt": {
+    "to": null,
+    "from": "0x209469C921db9d5Bd77084370e80B63d5cdD63C1",
+    "contractAddress": "0x0DF02C42860a5e29BFDaa0F89e86e8e25074571e",
+    "transactionIndex": 9,
+    "gasUsed": "216997",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xe7ef0fce4065624df137e3a6c90259963171edbda9fafc6522d3fac720e43f73",
+    "transactionHash": "0x08528f14cada941e0240488bcc68e0f97c26bc48187d7988df363a0e11a633a9",
+    "logs": [],
+    "blockNumber": 9002500,
+    "cumulativeGasUsed": "2094958",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [
+    "0x906dE43dBef27639b1688Ac46532a16dc07Ce410",
+    "0x0FEe56B014be6870415Ec2dD018Da6bD3E1D7d24"
+  ],
+  "numDeployments": 18,
+  "solcInputHash": "1715d5d90e1554860c64ce3a91538f68",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.18+commit.87f61d96\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_veaOutbox\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"_lightBulbSwitch\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"lightBulbIsOn\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"lightBulbSwitch\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_msgSender\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"lightBulbOwner\",\"type\":\"address\"}],\"name\":\"turnOn\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"veaOutbox\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"A lightbulb on ethereum controlled by a switch on Arbitrum with the Vea bridge.*\",\"kind\":\"dev\",\"methods\":{\"turnOn(address,address)\":{\"details\":\"Toggles the lightbulb on or off.\",\"params\":{\"_msgSender\":\"The address of the sender on the L2 side.\",\"lightBulbOwner\":\"The address of the owner of the lightbulb on the L2 side.\"}}},\"title\":\"LightBulb\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/LightBulb.sol\":\"LightBulb\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"src/LightBulb.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\n/**\\n *  @authors: [@shotaronowhere]\\n *  @reviewers: []\\n *  @auditors: []\\n *  @bounties: []\\n *  @deployments: []\\n */\\n\\npragma solidity ^0.8.0;\\n\\n/**\\n * @title LightBulb\\n * @dev A lightbulb on ethereum controlled by a switch on Arbitrum with the Vea bridge.\\n **/\\n \\ncontract LightBulb{\\n    \\n    address public immutable veaOutbox; // vea bridge on L1\\n    address public immutable lightBulbSwitch; // The switch on arbitrum that controls this lightbulb.\\n    mapping (address=>bool) public lightBulbIsOn;\\n    \\n    constructor(address _veaOutbox, address _lightBulbSwitch) {\\n        veaOutbox = _veaOutbox;\\n        lightBulbSwitch = _lightBulbSwitch;\\n    }\\n\\n    modifier onlyAuthenticatedFromVea(address _msgSender) {\\n        require(msg.sender == veaOutbox, \\\"L1 Auth: Only Vea Bridge.\\\");\\n        require(_msgSender == lightBulbSwitch, \\\"L2 Auth: Only the switch can turn on the lightbulb.\\\");\\n        _;\\n    }\\n\\n    /**\\n    * @dev Toggles the lightbulb on or off.\\n    * @param _msgSender The address of the sender on the L2 side.\\n    * @param lightBulbOwner The address of the owner of the lightbulb on the L2 side.\\n    */\\n    function turnOn(address _msgSender, address lightBulbOwner) external onlyAuthenticatedFromVea(_msgSender) {\\n        // lightBulbOwner authentication is done on the L2 switch side.\\n        lightBulbIsOn[lightBulbOwner] = true;\\n    }\\n}\",\"keccak256\":\"0x31f58571803c2003c5befe42dcea317a316f9cd4a09824e4ae13bc5bcdc588d0\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x60c060405234801561001057600080fd5b506040516103b23803806103b283398101604081905261002f91610062565b6001600160a01b039182166080521660a052610095565b80516001600160a01b038116811461005d57600080fd5b919050565b6000806040838503121561007557600080fd5b61007e83610046565b915061008c60208401610046565b90509250929050565b60805160a0516102ec6100c6600039600081816056015261018401526000818160e2015261011001526102ec6000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c80630c5ecbd21461005157806345fbb5ed14610095578063501ea4e1146100aa578063dea580b9146100dd575b600080fd5b6100787f000000000000000000000000000000000000000000000000000000000000000081565b6040516001600160a01b0390911681526020015b60405180910390f35b6100a86100a3366004610261565b610104565b005b6100cd6100b8366004610294565b60006020819052908152604090205460ff1681565b604051901515815260200161008c565b6100787f000000000000000000000000000000000000000000000000000000000000000081565b81336001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016146101825760405162461bcd60e51b815260206004820152601960248201527f4c3120417574683a204f6e6c7920566561204272696467652e0000000000000060448201526064015b60405180910390fd5b7f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316816001600160a01b03161461021f5760405162461bcd60e51b815260206004820152603360248201527f4c3220417574683a204f6e6c7920746865207377697463682063616e20747572604482015272371037b7103a3432903634b3b43a313ab6311760691b6064820152608401610179565b506001600160a01b03166000908152602081905260409020805460ff1916600117905550565b80356001600160a01b038116811461025c57600080fd5b919050565b6000806040838503121561027457600080fd5b61027d83610245565b915061028b60208401610245565b90509250929050565b6000602082840312156102a657600080fd5b6102af82610245565b939250505056fea26469706673582212200eb97a7f577981cb174f48f33e3950a34c702b15386c8149c72e78a70197a49664736f6c63430008120033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c80630c5ecbd21461005157806345fbb5ed14610095578063501ea4e1146100aa578063dea580b9146100dd575b600080fd5b6100787f000000000000000000000000000000000000000000000000000000000000000081565b6040516001600160a01b0390911681526020015b60405180910390f35b6100a86100a3366004610261565b610104565b005b6100cd6100b8366004610294565b60006020819052908152604090205460ff1681565b604051901515815260200161008c565b6100787f000000000000000000000000000000000000000000000000000000000000000081565b81336001600160a01b037f000000000000000000000000000000000000000000000000000000000000000016146101825760405162461bcd60e51b815260206004820152601960248201527f4c3120417574683a204f6e6c7920566561204272696467652e0000000000000060448201526064015b60405180910390fd5b7f00000000000000000000000000000000000000000000000000000000000000006001600160a01b0316816001600160a01b03161461021f5760405162461bcd60e51b815260206004820152603360248201527f4c3220417574683a204f6e6c7920746865207377697463682063616e20747572604482015272371037b7103a3432903634b3b43a313ab6311760691b6064820152608401610179565b506001600160a01b03166000908152602081905260409020805460ff1916600117905550565b80356001600160a01b038116811461025c57600080fd5b919050565b6000806040838503121561027457600080fd5b61027d83610245565b915061028b60208401610245565b90509250929050565b6000602082840312156102a657600080fd5b6102af82610245565b939250505056fea26469706673582212200eb97a7f577981cb174f48f33e3950a34c702b15386c8149c72e78a70197a49664736f6c63430008120033",
+  "devdoc": {
+    "details": "A lightbulb on ethereum controlled by a switch on Arbitrum with the Vea bridge.*",
+    "kind": "dev",
+    "methods": {
+      "turnOn(address,address)": {
+        "details": "Toggles the lightbulb on or off.",
+        "params": {
+          "_msgSender": "The address of the sender on the L2 side.",
+          "lightBulbOwner": "The address of the owner of the lightbulb on the L2 side."
+        }
+      }
+    },
+    "title": "LightBulb",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [
+      {
+        "astId": 36,
+        "contract": "src/LightBulb.sol:LightBulb",
+        "label": "lightBulbIsOn",
+        "offset": 0,
+        "slot": "0",
+        "type": "t_mapping(t_address,t_bool)"
+      }
+    ],
+    "types": {
+      "t_address": {
+        "encoding": "inplace",
+        "label": "address",
+        "numberOfBytes": "20"
+      },
+      "t_bool": {
+        "encoding": "inplace",
+        "label": "bool",
+        "numberOfBytes": "1"
+      },
+      "t_mapping(t_address,t_bool)": {
+        "encoding": "mapping",
+        "key": "t_address",
+        "label": "mapping(address => bool)",
+        "numberOfBytes": "32",
+        "value": "t_bool"
+      }
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "lightbulb-sc",
+  "dependencies": {
+    "@kleros/vea-contracts": "^0.1.2",
+    "@nomiclabs/hardhat-ethers": "^2.2.2",
+    "@nomiclabs/hardhat-etherscan": "^3.1.7",
+    "@typechain/hardhat": "^6.1.5",
+    "@types/node": "^18.15.5",
+    "dotenv": "^16.0.3",
+    "ethereumjs-util": "^7.1.5",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.13.0",
+    "hardhat-deploy": "^0.11.25",
+    "hardhat-deploy-ethers": "0.3.0-beta.13",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.2"
+  },
+  "scripts": {
+    "build": "hardhat compile",
+    "deploy": "hardhat deploy"
+  }
+}

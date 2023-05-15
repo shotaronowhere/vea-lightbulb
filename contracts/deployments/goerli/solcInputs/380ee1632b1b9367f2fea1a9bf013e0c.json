@@ -1,0 +1,35 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "src/LightBulb.sol": {
+      "content": "// SPDX-License-Identifier: MIT\n\n/**\n *  @authors: [@shotaronowhere]\n *  @reviewers: []\n *  @auditors: []\n *  @bounties: []\n *  @deployments: []\n */\n\npragma solidity ^0.8.0;\n\n/**\n * @title LightBulb\n * @dev A lightbulb on ethereum controlled by a switch on Arbitrum with the Vea bridge.\n **/\n \ncontract LightBulb{\n    \n    address public immutable veaOutbox; // vea bridge on L1\n    address public immutable lightBulbSwitch; // The switch on arbitrum that controls this lightbulb.\n    bool public globalLighbulb;\n    mapping (address=>bool) public lightBulbIsOn;\n    \n    constructor(address _veaOutbox, address _lightBulbSwitch) {\n        veaOutbox = _veaOutbox;\n        lightBulbSwitch = _lightBulbSwitch;\n    }\n\n    modifier onlyAuthenticatedFromVea(address _msgSender) {\n        require(msg.sender == veaOutbox, \"L1 Auth: Only Vea Bridge.\");\n        require(_msgSender == lightBulbSwitch, \"L2 Auth: Only the switch can turn on the lightbulb.\");\n        _;\n    }\n\n    modifier onlyFromVea() {\n        require(msg.sender == veaOutbox, \"L1 Auth: Only Vea Bridge.\");\n        _;\n    }\n\n    /**\n    * @dev Toggles the lightbulb on or off.\n    * @param _msgSender The address of the sender on the L2 side.\n    * @param lightBulbOwner The address of the owner of the lightbulb on the L2 side.\n    */\n    function toggleMyLightBulb(address _msgSender, address lightBulbOwner) external onlyAuthenticatedFromVea(_msgSender) {\n        // lightBulbOwner authentication is done on the L2 switch side.\n        lightBulbIsOn[lightBulbOwner] = !lightBulbIsOn[lightBulbOwner];\n    }\n\n    /**\n    * @dev Toggles the global lightbulb on or off.\n    * @param _msgSender The address of the sender on the L2 side.\n    */\n    function toggleGlobalLightBulb(address _msgSender) external onlyFromVea(){\n        // lightbulb is global, no owner authentication is needed.\n        globalLighbulb = !globalLighbulb;\n    }\n}"
+    }
+  },
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
