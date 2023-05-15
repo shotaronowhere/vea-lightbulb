@@ -54,12 +54,12 @@ export default function Home() {
         ],
         functionName: 'lightBulbIsOn',
         chainId: 5,
-        args: [address],
+        args: [address!],
       })
       console.log('lightBulbIsOn', lightBulbIsOn)
       if (lightBulbIsOn)
         setLight(true);
-      const lightBulbToggles = await request(
+      const lightBulbToggles: any = await request(
         'https://api.thegraph.com/subgraphs/name/shotaronowhere/vea-lightbulb',
         `{
           lightBulbToggleds(first: 1, where: {lightBulbOwner: "${address}"}, orderBy: blockTimestamp, orderDirection: asc) {
@@ -145,23 +145,23 @@ export default function Home() {
             <div className="flex-center col-span-12 flex flex-col lg:col-span-9">
               <div className="text-center">
                 <div className="countdown font-mono text-2xl">
-                  <span id="hour" style={{ '--value': 0 }}></span>:
-                  <span id="minute" style={{ '--value': Math.floor((time - Math.floor(time / 3600) * 3600) / 60) }}></span>:
+                  <span id="hour" style={{ "--value": 0 } as React.CSSProperties}></span>:
+                  <span id="minute" style={{ '--value': Math.floor((time - Math.floor(time / 3600) * 3600) / 60) } as React.CSSProperties}></span>:
                   <span
                     id="second"
                     style={{
                       '--value': time - Math.floor(time / 3600) * 3600 - Math.floor((time - Math.floor(time / 3600) * 3600) / 60) * 60,
-                    }}></span>
+                    }as React.CSSProperties}></span>
                 </div>
               </div>
             </div>
             <div className="countdown font-mono text-2xl">
-              <span id="hour" style={{ '--value': 0 }}></span>:<span id="minute" style={{ '--value': 0 }}></span>:
+              <span id="hour" style={{ '--value': 0 }as React.CSSProperties}></span>:<span id="minute" style={{ '--value': 0 }as React.CSSProperties}></span>:
               <span
                 id="second"
                 style={{
                   '--value': 0,
-                }}></span>
+                }as React.CSSProperties}></span>
             </div>
           </BranchIsWalletConnected>
           <div className="switches">
