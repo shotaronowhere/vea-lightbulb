@@ -1,11 +1,14 @@
 import { defineConfig } from '@wagmi/cli'
-import { react, hardhat } from '@wagmi/cli/plugins'
+import { react } from '@wagmi/cli/plugins'
+import { erc20ABI } from 'wagmi'
 
 export default defineConfig({
   out: 'lib/blockchain.ts',
-  plugins: [
-    hardhat({
-      project: '../contracts',
-    }),
+  contracts: [
+    {
+      name: 'erc20',
+      abi: erc20ABI,
+    },
   ],
+  plugins: [react()],
 })
