@@ -1,3 +1,9 @@
 node_modules
 contracts/.env
 contracts/package.json
+subgraph/generated/schema.ts
+subgraph/generated/Switch/Switch.ts
+subgraph/build/schema.graphql
+subgraph/build/subgraph.yaml
+subgraph/build/Switch/Switch.wasm
+subgraph/build/Switch/abis/Switch.json

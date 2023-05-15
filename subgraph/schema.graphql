@@ -1,0 +1,8 @@
+type lightBulbToggled @entity(immutable: true) {
+  id: Bytes!
+  messageId: BigInt! # uint64
+  lightBulbOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

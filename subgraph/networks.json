@@ -1,0 +1,8 @@
+{
+  "arbitrum-goerli": {
+    "Switch": {
+      "address": "0x13439B8120E726edb4Bb7F3Fee62141068ca0311",
+      "startBlock": 19791397
+    }
+  }
+}
