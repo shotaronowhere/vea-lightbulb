@@ -2,12 +2,11 @@
 import { motion } from 'framer-motion'
 import '/styles/light.css'
 import request from 'graphql-request'
-import { useAccount, goerli, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
+import { useAccount, configureChains, createClient, WagmiConfig, goerli, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
 import { readContract } from '@wagmi/core'
 import { BranchIsWalletConnected } from '@/components/shared/branch-is-wallet-connected'
 import { Button } from '@/components/ui/button'
 import { FADE_DOWN_ANIMATION_VARIANTS } from '@/config/design'
-import { createClient, configureChains, mainnet } from '@wagmi/core'
 import { publicProvider } from '@wagmi/core/providers/public'
  
 const { provider, webSocketProvider } = configureChains(
@@ -114,6 +113,7 @@ export default function Home() {
       },
     ],
     functionName: 'turnOnLightBulb',
+    chainId: 421613
   })
   const { data, write } = useContractWrite(config)
 
@@ -141,6 +141,7 @@ export default function Home() {
               <span></span>
             </div>
           </div>
+          <WagmiConfig client={client}>
           <BranchIsWalletConnected>
             <div className="flex-center col-span-12 flex flex-col lg:col-span-9">
               <div className="text-center">
@@ -164,6 +165,7 @@ export default function Home() {
                 }as React.CSSProperties}></span>
             </div>
           </BranchIsWalletConnected>
+          </WagmiConfig>
           <div className="switches">
             <span className="switch">
               <Button className="btn" disabled={!write} onClick={() => write?.()}></Button>
