@@ -125,13 +125,6 @@ export default function Home() {
 
   return (
     <>
-      <motion.div
-        className={`flex-center ${condition} body flex h-full w-full`}
-        variants={FADE_DOWN_ANIMATION_VARIANTS}
-        initial="hidden"
-        whileInView="show"
-        animate="show"
-        viewport={{ once: true }}>
         <div className="flex">
           <div className="light" style={{ margin: '10px 0' }}>
             <div className="wire"></div>
@@ -169,7 +162,6 @@ export default function Home() {
             </span>
           </div>
         </div>
-      </motion.div>
     </>
   )
 }
