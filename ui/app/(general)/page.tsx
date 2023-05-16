@@ -2,15 +2,15 @@
 import { motion } from 'framer-motion'
 import '/styles/light.css'
 import request from 'graphql-request'
-import { useAccount, configureChains, createClient, WagmiConfig, goerli, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
-import { readContract } from '@wagmi/core'
+import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
 import { BranchIsWalletConnected } from '@/components/shared/branch-is-wallet-connected'
 import { Button } from '@/components/ui/button'
 import { FADE_DOWN_ANIMATION_VARIANTS } from '@/config/design'
-import { publicProvider } from '@wagmi/core/providers/public'
- 
+import { publicProvider } from 'wagmi/providers/public'
+import {goerli, arbitrumGoerli, gnosisChiado} from 'wagmi/chains' 
+import { readContract, configureChains, createClient } from '@wagmi/core'
 const { provider, webSocketProvider } = configureChains(
-  [goerli],
+  [goerli, arbitrumGoerli, gnosisChiado],
   [publicProvider()],
 )
  
@@ -101,7 +101,7 @@ export default function Home() {
     return () => clearInterval(myInterval)
   }, [light])
 
-  const { config } = usePrepareContractWrite({
+  const { config, error } = usePrepareContractWrite({
     address: '0x0FEe56B014be6870415Ec2dD018Da6bD3E1D7d24',
     abi: [
       {
@@ -112,8 +112,7 @@ export default function Home() {
         type: 'function',
       },
     ],
-    functionName: 'turnOnLightBulb',
-    chainId: 421613
+    functionName: 'turnOnLightBulb'
   })
   const { data, write } = useContractWrite(config)
 
@@ -141,7 +140,6 @@ export default function Home() {
               <span></span>
             </div>
           </div>
-          <WagmiConfig client={client}>
           <BranchIsWalletConnected>
             <div className="flex-center col-span-12 flex flex-col lg:col-span-9">
               <div className="text-center">
@@ -165,7 +163,6 @@ export default function Home() {
                 }as React.CSSProperties}></span>
             </div>
           </BranchIsWalletConnected>
-          </WagmiConfig>
           <div className="switches">
             <span className="switch">
               <Button className="btn" disabled={!write} onClick={() => write?.()}></Button>

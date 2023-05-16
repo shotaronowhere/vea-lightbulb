@@ -20,7 +20,7 @@ export const siteConfig: SiteConfig = {
   name: '💡 Vea ',
   title: '💡 Vea - Crosschain lightbulb',
   emoji: '💡',
-  description: 'Crosschain messages with Vea',
+  description: 'Crosschain lightbulb',
   previewImg: `${SITE_CANONICAL}/preview.png`,
   localeDefault: 'en',
   links: {
