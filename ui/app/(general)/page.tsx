@@ -92,7 +92,7 @@ export default function Home() {
     // create a interval and get the id
     const myInterval = setInterval(() => {
       setTime((time) => {
-        if (time == 1) setLight(!light)
+        if (time == 1) setLight(true)
         if (time > 0) return time - 1
         return time
       })
@@ -125,7 +125,14 @@ export default function Home() {
 
   return (
     <>
-        <div className="flex">
+          <motion.div
+        className={`flex-center ${condition} body flex h-full w-full`}
+        variants={FADE_DOWN_ANIMATION_VARIANTS}
+        initial="hidden"
+        whileInView="show"
+        animate="show"
+        viewport={{ once: true }}>
+        <div className={`flex-center ${condition} body flex h-full w-full`}>
           <div className="light" style={{ margin: '10px 0' }}>
             <div className="wire"></div>
             <div className="bulb">
@@ -162,6 +169,7 @@ export default function Home() {
             </span>
           </div>
         </div>
+        </motion.div>
     </>
   )
 }
