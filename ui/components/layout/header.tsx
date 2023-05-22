@@ -47,9 +47,9 @@ export function Header(props: Props) {
 
           <div className="flex items-center gap-4">
             <BranchButtonLoginOrAccount classNameButtonLogout="menu-item" classNameButtonLogin="menu-item colormode" />
-            <LinkComponent className="flex items-center" href="https://github.com/kleros/vea-docs">
+            <LinkComponent className="flex items-center" href="https://docs.vea.ninja/introduction/readme">
               <button className="btn-pill bg-gradient-button btn hover:scale-105 hover:shadow-lg">
-                <span className="px-2">Build with Vea</span>
+                <span className="px-2">Build on Vea</span>
               </button>
             </LinkComponent>
           </div>

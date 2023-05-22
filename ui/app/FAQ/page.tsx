@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { FADE_DOWN_ANIMATION_VARIANTS } from '@/config/design'
+import { ResponsiveMobileAndDesktop } from '../../components/shared/responsive-mobile-and-desktop'
 
 export default function PageDashboardTransaction() {
   return (
@@ -14,7 +15,7 @@ export default function PageDashboardTransaction() {
       whileInView="show"
       animate="show"
       viewport={{ once: true }}>
-      <Accordion type="single" collapsible className="w-[100%]">
+      <Accordion type="single" collapsible className="w-[90%]">
         <AccordionItem value="item-1">
           <AccordionTrigger>How does the Vea Bridge work?</AccordionTrigger>
           <AccordionContent>Optimistic Bridging</AccordionContent>

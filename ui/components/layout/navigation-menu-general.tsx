@@ -64,7 +64,7 @@ export function NavigationMenuGeneral() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <LinkComponent href="/FAQ">FAQs</LinkComponent>
+          <LinkComponent href="/FAQ">FAQ</LinkComponent>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
