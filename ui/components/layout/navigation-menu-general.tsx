@@ -31,7 +31,7 @@ export function NavigationMenuGeneral() {
                     <div className="absolute top-10 right-0 z-0 h-48 w-48 bg-[url('https://em-content.zobj.net/thumbs/240/twitter/322/high-voltage_26a1.png')] bg-cover opacity-20" />
                     <div className="z-10">
                       <h3 className="z-10 mb-2 mt-4 text-lg font-medium text-white">
-                        <span className="text-4xl">Build with Vea! 🌉</span>
+                        <span className="text-4xl">Build with Vea!</span>
                       </h3>
                       <p className="mb-3 text-sm leading-tight text-white/90">
                       The 🎚 and 💡 live on different chains, and communicate with Vea.
