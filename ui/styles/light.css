@@ -67,6 +67,19 @@
     z-index: 3;
 }
 
+.eth{
+    position: absolute;
+    bottom: calc(75% - 90px);
+    left: calc(50% - 28px);
+    width: 60px;    
+    height: 60px;
+    background: url('/icons/NetworkEthereum.svg');
+    background-size: 60px;
+    padding: 10px;
+    align-items: center;
+    z-index: 3;
+}
+
 .countdown-big{
     position: absolute;
     bottom: calc(75% - 280px);
