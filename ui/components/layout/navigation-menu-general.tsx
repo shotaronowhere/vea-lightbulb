@@ -64,7 +64,7 @@ export function NavigationMenuGeneral() {
           <LinkComponent href="/FAQ">FAQ</LinkComponent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <LinkComponent href="https://veascan.io/">&nbsp; VeaScan</LinkComponent>
+          <LinkComponent href="https://veascan.io/">&nbsp; Veascan</LinkComponent>
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>

@@ -41,6 +41,7 @@ export default function Home() {
   const [claimVerified, setClaimVerified] = useState("loading...")
   const [relayedTx, setRelayedTx] = useState("loading...")
   const [time, setTime] = useState(0)
+  const [timeRelay, setTimeRelay] = useState(0)
   const [veaBridgeConfirmation, setveaBridgeConfirmation] = useState(false)
   const [switchEpoch, setSwitchEpoch] = useState(0)
   var condition = light ? 'on' : 'off'
@@ -51,8 +52,8 @@ export default function Home() {
   var relayedTxBool = relayedTx != "loading..."
   var tableDisplay = light || switchHit ? '' : 'none'
   var timerDisplay = switchHit && !light && !veaBridgeConfirmation ? '' : 'none'
+  var timerRelayDisplay = !light && veaBridgeConfirmation ? '' : 'none'
   var bridgeSuccess = veaBridgeConfirmation || light ? '' : 'none'
-  const count = useRef(0)
 
   const account = useAccount({
     onDisconnect() {
@@ -64,6 +65,7 @@ export default function Home() {
       setRelayedTx("loading...");
       setveaBridgeConfirmation(false);
       setTime(0)
+      setTimeRelay(0)
     },
 
     async onConnect({ address, connector, isReconnected }) {
@@ -183,9 +185,11 @@ export default function Home() {
           }
 
         }
-        const estimatedBridgeTimeComplete = Math.ceil((switchTime / 1800))*1800 + 60
+        const estimatedBridgeTimeComplete = Math.ceil((switchTime / 1800))*1800 + 120
         const estimatedBridgeTime = Math.max(estimatedBridgeTimeComplete - Math.floor(Date.now()/1000), 0)
+        const estimatedBridgeRelayTime = Math.max(estimatedBridgeTimeComplete + 420 - Math.floor(Date.now()/1000), 0)
         setTime(estimatedBridgeTime)
+        setTimeRelay(estimatedBridgeRelayTime)
         setHitSwitch(lightBulbToggles.lightBulbToggleds[0].transactionHash)
         setHitSwitchMsgId(lightBulbToggles.lightBulbToggleds[0].messageId)
         console.log('time set', estimatedBridgeTime)
@@ -198,6 +202,7 @@ export default function Home() {
         setRelayedTx("loading...")
         setveaBridgeConfirmation(false);
         setTime(0)
+        setTimeRelay(0)
       }
     },
   })
@@ -210,47 +215,76 @@ export default function Home() {
       chainId: 10200,
       once: true,
     },
-    (epoch) => {
+    async (epoch) => {
       console.log('im watching')
       if (switchEpoch != 0){
         if ((epoch as number) >= switchEpoch){
           setveaBridgeConfirmation(true)
-          console.log('latestVerifiedEpoch', epoch)
+          const bridgeTxn: any = await request(
+            'https://api.goldsky.com/api/public/project_clh3hizxpga0j49w059761yga/subgraphs/kleros-veascan-outbox-chiado/latest/gn',
+            `{
+  claims(first: 1, where:{epoch_gte: ${epoch}}, orderBy: epoch, orderDirection: desc) {
+    txHash
+  }
+}`
+          )
+          console.log('checking vea (1/2')
+          console.log(bridgeTxn)
+          if (bridgeTxn.claims.length > 0) {
+            console.log(bridgeTxn.claims[0].txHash)
+            setSnapshotTaken(bridgeTxn.claims[0].txHash);
+          } else {
+            console.log('no bridge txn')
           }
+          const bridgeTxn2: any = await request(
+            'https://api.thegraph.com/subgraphs/name/shotaronowhere/veascan-inbox-arbitrumgoerli-c',
+            `          {
+              snapshots(first: 1, where: {epoch_gte: ${epoch}}, orderBy: epoch, orderDirection: asc) {
+                txHash
+              }
+            }`
+          )
+          if (bridgeTxn2.snapshots.length > 0) {
+            setClaimVerified(bridgeTxn2.snapshots[0].txHash);
+            setTimeRelay(310);
+          }
+        }
+      }
+    },
+  )
+
+  const unwatch2 = watchContractEvent(
+    {
+      address: '0xdFd7aDEb43d46FA3f16FB3e27F7fe85c3f5BD89D',
+      abi: abi,
+      eventName: 'MessageRelayed',
+      chainId: 10200,
+    },
+    async (_msgId) => {
+      if (hitSwitchMsgId == _msgId){
+        setLight(true);
+        const bridgeTxn: any = await request(
+          'https://api.goldsky.com/api/public/project_clh3hizxpga0j49w059761yga/subgraphs/kleros-veascan-outbox-chiado/latest/gn',
+          `{
+  messages(first: 5, where: {id: ${hitSwitchMsgId}}) {
+    id
+    txHash
+  }
+}`)
+        if (bridgeTxn.messages.length > 0)
+          setRelayedTx(bridgeTxn.messages[0].txHash);
+        unwatch2();
       }
     },
   )
 
   function handleClick() {
     const switchTime = Math.floor(Date.now()/1000)
-    const estimatedBridgeTimeComplete = Math.ceil((switchTime / 1800))*1800 + 60
+    const estimatedBridgeTimeComplete = Math.ceil((switchTime / 1800))*1800 + 120
     const estimatedBridgeTime = Math.max(estimatedBridgeTimeComplete - Math.floor(Date.now()/1000), 0)
     setTime(estimatedBridgeTime)
   }
-/*
-  if(time == 0){
-    console.log('yoyoyoyoyoyo')
-    const { data, isError, isLoading } = useContractRead({
-      address: '0x74F0E300aA91F207E4DF6388a73ba458D7Dc3Cc5',
-      abi: [
-        {
-          inputs:[],
-          name:"latestVerifiedEpoch",
-          outputs:[{internalType:"uint256",name:"",type:"uint256"}],
-          stateMutability:"view",
-          type:"function"}
-      ],
-      functionName: 'latestVerifiedEpoch',
-      chainId: 5,
-      onSuccess(data) {
-        console.log('Success', data)
-      },
-      onError(error) {
-        console.log('Error', error)
-      },
-    })
-      //console.log('data is', data)
-  }*/
+
 
   useEffect(() => {
     // create a interval and get the id
@@ -258,6 +292,10 @@ export default function Home() {
       setTime((time) => {
         if (time > 0) return time - 1
         return time
+      })
+      setTimeRelay((timeRelay) => {
+        if (timeRelay > 0) return timeRelay - 1
+        return timeRelay
       })
     }, 1000)
   
@@ -321,7 +359,7 @@ export default function Home() {
         //goerli.infura.io/v3
         //https: console.log(lightBulbToggles.lightBulbToggleds[0].messageId)
         const switchTime = lightBulbToggles.lightBulbToggleds[0].blockTimestamp
-        const estimatedBridgeTimeComplete = Math.ceil((switchTime / 1800))*1800 + 60
+        const estimatedBridgeTimeComplete = Math.ceil((switchTime / 1800))*1800 + 120
         const estimatedBridgeTime = Math.max(estimatedBridgeTimeComplete - Math.floor(Date.now()/1000), 0)
         setTime(estimatedBridgeTime)
         setHitSwitch(lightBulbToggles.lightBulbToggleds[0].transactionHash)
@@ -482,8 +520,19 @@ claims(first: 1, where:{epoch_gte: ${Math.floor(switchTime/1800)}}, orderBy: epo
       <th>Lightbulb 💡</th>
       <td><img src='/icons/NetworkGnosis.svg'></img></td>
         <td><div style={{display: relayed}}><span style={{display: "flex"}}>{relayedTxBool? relayedTx.substring(0,5)+'...'+relayedTx.substring(relayedTx.length-4,relayedTx.length-1) : relayedTx}&nbsp;<a target="_blank" href={"https://blockscout.com/gnosis/chiado/tx/"+relayedTx}><FiExternalLink/></a></span></div></td>
-        <td><div style={{display: relayed}}>✅</div>
-</td>
+        <td><div style={{display: timerRelayDisplay}}>
+                <div className="countdown font-mono">
+                  <span id="hour" style={{ "--value": 0 } as React.CSSProperties}></span>:
+                  <span id="minute" style={{ '--value': Math.floor((timeRelay - Math.floor(timeRelay / 3600) * 3600) / 60) } as React.CSSProperties}></span>:
+                  <span
+                    id="second"
+                    style={{
+                      '--value': timeRelay - Math.floor(timeRelay / 3600) * 3600 - Math.floor((timeRelay - Math.floor(timeRelay / 3600) * 3600) / 60) * 60,
+                    }as React.CSSProperties}></span>
+            </div>
+            </div>
+            <div style={{display: relayed}}>✅</div>
+          </td>
       </tr>
     </tbody>
   </table>
