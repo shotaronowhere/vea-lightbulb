@@ -7,7 +7,7 @@ import { BranchIsWalletConnected } from '@/components/shared/branch-is-wallet-co
 import { Button } from '@/components/ui/button'
 import { FADE_DOWN_ANIMATION_VARIANTS } from '@/config/design'
 import { publicProvider } from 'wagmi/providers/public'
-import {goerli, arbitrumGoerli, gnosisChiado} from 'wagmi/chains' 
+import { arbitrumGoerli, gnosisChiado} from 'wagmi/chains' 
 import { readContract, configureChains, watchContractEvent, createClient } from '@wagmi/core'
 import { BigNumber } from 'ethers'
 const abi = require('../../assets/VeaOutboxArbToEthDevnet.json').abi
@@ -36,23 +36,32 @@ import Link from 'next/link'
 export default function Home() {
   const [light, setLight] = useState(false)
   const [hitSwitch, setHitSwitch] = useState("loading...")
+  const [hitSwitchMsgId, setHitSwitchMsgId] = useState("loading...")
+  const [snapshotTaken, setSnapshotTaken] = useState("loading...")
   const [claimVerified, setClaimVerified] = useState("loading...")
+  const [relayedTx, setRelayedTx] = useState("loading...")
   const [time, setTime] = useState(0)
   const [veaBridgeConfirmation, setveaBridgeConfirmation] = useState(false)
   const [switchEpoch, setSwitchEpoch] = useState(0)
   var condition = light ? 'on' : 'off'
   var relayed = light ? '' : 'none'
   var switchHit = hitSwitch != "loading..."
+  var snapshotTakenBool = snapshotTaken != "loading..."
+  var claimVerifiedBool = claimVerified != "loading..."
+  var relayedTxBool = relayedTx != "loading..."
   var tableDisplay = light || switchHit ? '' : 'none'
   var timerDisplay = switchHit && !light && !veaBridgeConfirmation ? '' : 'none'
   var bridgeSuccess = veaBridgeConfirmation || light ? '' : 'none'
   const count = useRef(0)
-  var claimVerifiedBool = claimVerified != "loading..."
 
   const account = useAccount({
     onDisconnect() {
       setLight(false);
       setHitSwitch("loading...");
+      setSwitchEpoch(0)
+      setSnapshotTaken("loading...");
+      setClaimVerified("loading...");
+      setRelayedTx("loading...");
       setveaBridgeConfirmation(false);
       setTime(0)
     },
@@ -126,45 +135,67 @@ export default function Home() {
         const epoch = Math.floor(switchTime / 1800)
         setSwitchEpoch(epoch)
         console.log('switch epoch is', epoch);
-        if (latestVerifiedEpoch >= epoch){
+        if (latestVerifiedEpoch > epoch){
           console.log('latest epoch', latestVerifiedEpoch);
           console.log('msg epoch', epoch);
           setveaBridgeConfirmation(true)
           console.log('latestVerifiedEpoch', latestVerifiedEpoch)
-          /*
-          const bridgeTxn = await request(
-            'https://thegraph.com/hosted-service/subgraph/alcercu/veascan-outbox-goerli',
+          const bridgeTxn: any = await request(
+            'https://api.goldsky.com/api/public/project_clh3hizxpga0j49w059761yga/subgraphs/kleros-veascan-outbox-chiado/latest/gn',
             `{
-              claims(first: 1, orderBy: epoch, where: {epoch_gte: 3}) {
+  claims(first: 1, where:{epoch_gte: ${epoch}}, orderBy: epoch, orderDirection: desc) {
+    txHash
+  }
+    messages(first: 5, where: {id: ${msgid}}) {
+      id
+      txHash
+    }
+}`
+          )
+          console.log('checking vea (1/2')
+          console.log(bridgeTxn)
+          if (bridgeTxn.claims.length > 0) {
+            console.log(bridgeTxn.claims[0].txHash)
+            setSnapshotTaken(bridgeTxn.claims[0].txHash);
+          } else {
+            console.log('no bridge txn')
+          }
+          if(bridgeTxn.messages.length > 0){
+            console.log(bridgeTxn.messages[0].txHash)
+            setRelayedTx(bridgeTxn.messages[0].txHash);
+          } else {
+            console.log('no relayed txn')
+          }
+
+          const bridgeTxn2: any = await request(
+            'https://api.thegraph.com/subgraphs/name/shotaronowhere/veascan-inbox-arbitrumgoerli-c',
+            `          {
+              snapshots(first: 1, where: {epoch_gte: ${epoch}}, orderBy: epoch, orderDirection: asc) {
                 txHash
               }
             }`
-          )*/
-        }
-        const bridgeTxn2: any = await request(
-          'https://api.thegraph.com/subgraphs/name/shotaronowhere/veascan-inbox-arbitrumgoerli-g',
-          `          {
-            snapshots(first: 1, where: {epoch_gte: ${epoch}}, orderBy: epoch, orderDirection: asc) {
-              txHash
-            }
-          }`
-        )
-        if (bridgeTxn2.snapshots.length > 0) {
-          console.log(bridgeTxn2.snapshots[0].txHash)
-          setClaimVerified(bridgeTxn2.snapshots[0].txHash);
-        } else {
-          console.log('no bridge txn')
-        }
+          )
+          if (bridgeTxn2.snapshots.length > 0) {
+            console.log(bridgeTxn2.snapshots[0].txHash)
+            setClaimVerified(bridgeTxn2.snapshots[0].txHash);
+          } else {
+            console.log('no bridge txn')
+          }
 
+        }
         const estimatedBridgeTimeComplete = Math.ceil((switchTime / 1800))*1800 + 60
         const estimatedBridgeTime = Math.max(estimatedBridgeTimeComplete - Math.floor(Date.now()/1000), 0)
         setTime(estimatedBridgeTime)
         setHitSwitch(lightBulbToggles.lightBulbToggleds[0].transactionHash)
+        setHitSwitchMsgId(lightBulbToggles.lightBulbToggleds[0].messageId)
         console.log('time set', estimatedBridgeTime)
       } else {
         setHitSwitch("loading...")
+        setHitSwitchMsgId("loading...")
+        setSnapshotTaken("loading...")
         setSwitchEpoch(0)
         setClaimVerified("loading...")
+        setRelayedTx("loading...")
         setveaBridgeConfirmation(false);
         setTime(0)
       }
@@ -200,7 +231,7 @@ export default function Home() {
   if(time == 0){
     console.log('yoyoyoyoyoyo')
     const { data, isError, isLoading } = useContractRead({
-      address: '0xdFd7aDEb43d46FA3f16FB3e27F7fe85c3f5BD89D',
+      address: '0x74F0E300aA91F207E4DF6388a73ba458D7Dc3Cc5',
       abi: [
         {
           inputs:[],
@@ -210,7 +241,7 @@ export default function Home() {
           type:"function"}
       ],
       functionName: 'latestVerifiedEpoch',
-      chainId: 10200,
+      chainId: 5,
       onSuccess(data) {
         console.log('Success', data)
       },
@@ -234,11 +265,13 @@ export default function Home() {
   
 	const handleConnectorUpdate = async ({account, chain}: ConnectorData) => {
     setHitSwitch("loading...")
-    setTime(0)
+    setSnapshotTaken("loading...")
     setSwitchEpoch(0)
-    setveaBridgeConfirmation(false);
     setClaimVerified("loading...")
-
+    setRelayedTx("loading...")
+    setTime(0)
+    setveaBridgeConfirmation(false);
+    
     if (account) {
       const lightBulbIsOn = await readContract({
         address: '0xb525F403026DfE08ae0200834cBCAa27a56FD6A3',
@@ -292,9 +325,36 @@ export default function Home() {
         const estimatedBridgeTime = Math.max(estimatedBridgeTimeComplete - Math.floor(Date.now()/1000), 0)
         setTime(estimatedBridgeTime)
         setHitSwitch(lightBulbToggles.lightBulbToggleds[0].transactionHash)
+        setHitSwitchMsgId(lightBulbToggles.lightBulbToggleds[0].messageId)
         console.log('time set', estimatedBridgeTime)
+        const msgid = lightBulbToggles.lightBulbToggleds[0].messageId
+        setSwitchEpoch(Math.floor(switchTime/1800))
+        const bridgeTxn: any = await request(
+          'https://api.goldsky.com/api/public/project_clh3hizxpga0j49w059761yga/subgraphs/kleros-veascan-outbox-chiado/latest/gn',
+          `{
+claims(first: 1, where:{epoch_gte: ${Math.floor(switchTime/1800)}}, orderBy: epoch, orderDirection: desc) {
+  txHash
+}
+  messages(first: 5, where: {id: ${msgid}}) {
+    id
+    txHash
+  }
+}`
+        )
+        if (bridgeTxn.claims.length > 0) {
+          console.log(bridgeTxn.claims[0].txHash)
+          setSnapshotTaken(bridgeTxn.claims[0].txHash);
+        } else {
+          console.log('no bridge txn')
+        }
+        if(bridgeTxn.messages.length > 0){
+          console.log(bridgeTxn.messages[0].txHash)
+          setRelayedTx(bridgeTxn.messages[0].txHash);
+        } else {
+          console.log('no relayed txn')
+        }
         const bridgeTxn2: any = await request(
-          'https://api.thegraph.com/subgraphs/name/shotaronowhere/veascan-inbox-arbitrumgoerli-g',
+          'https://api.thegraph.com/subgraphs/name/shotaronowhere/veascan-inbox-arbitrumgoerli-c',
           `          {
             snapshots(first: 1, where: {epoch_gte: ${Math.floor(switchTime/1800)}}, orderBy: epoch, orderDirection: asc) {
               txHash
@@ -307,7 +367,6 @@ export default function Home() {
         } else {
           console.log('no bridge txn')
         }
-        
       } 
     } else if (chain) {
       console.log('new chain', chain)
@@ -337,11 +396,13 @@ export default function Home() {
     functionName: 'turnOnLightBulb'
   })
   const { data, write } = useContractWrite(config)
-
   const { isLoading, isSuccess } = useWaitForTransaction({
     hash: data?.hash,
     onSuccess(data) {
       setHitSwitch(data.transactionHash)
+      console.log('hit switch', data)
+      console.log('hit switch', BigNumber.from(data.logs[1].data.substring(0,66)).toNumber())
+      setHitSwitchMsgId(BigNumber.from(data.logs[1].data.substring(0,66)).toNumber().toString())
       handleClick()
     },
   })
@@ -357,7 +418,7 @@ export default function Home() {
         viewport={{ once: true }}>
         <div className={`flex-center ${condition} body flex h-full w-full`}>
           <div className="light" style={{ margin: '10px 0' }}>
-            <div className="gnosis"></div>
+          <div className="gnosis"></div>
             <div className="wire"></div>
             <div className="bulb">
               <span></span>
@@ -375,7 +436,7 @@ export default function Home() {
     {/* head */}
     <thead>
     <tr>
-      <th>Step</th>
+    <th>Step</th>
       <th>Chain</th>
       <th>Txn</th>
       <th>Status</th>
@@ -391,12 +452,13 @@ export default function Home() {
       </tr>
       {/* row 2 */}
       <tr className="hover">
-      <th>Vea 1 / 2 &nbsp; 🌉</th>
+        <th>Vea 1 / 2 &nbsp; 🌉</th>
         <td><img src='/icons/NetworkArbitrumTest.svg'></img></td>
         <td><div style={{display: bridgeSuccess}}><span style={{display: "flex"}}>{claimVerifiedBool? claimVerified.substring(0,5)+'...'+claimVerified.substring(claimVerified.length-4,claimVerified.length-1) : claimVerified}&nbsp;<a target="_blank" href={"https://goerli.arbiscan.io/tx/"+claimVerified}><FiExternalLink/></a></span></div></td>
         <td><div style={{display: timerDisplay}}>
                 <div className="countdown font-mono">
-                  ~<span id="minute" style={{ '--value': Math.floor((time - Math.floor(time / 3600) * 3600) / 60) } as React.CSSProperties}></span>:
+                  <span id="hour" style={{ "--value": 0 } as React.CSSProperties}></span>:
+                  <span id="minute" style={{ '--value': Math.floor((time - Math.floor(time / 3600) * 3600) / 60) } as React.CSSProperties}></span>:
                   <span
                     id="second"
                     style={{
@@ -410,7 +472,7 @@ export default function Home() {
       <tr className="hover">
         <th>Vea 2 / 2  &nbsp;  🌉</th>
         <td><img src='/icons/NetworkGnosis.svg'></img></td>
-        <td><div style={{display: bridgeSuccess}}><span style={{display: "flex"}}>veascan<a target="_blank" href="https://veascan.io/"><FiExternalLink/></a></span></div></td>
+        <td><div style={{display: bridgeSuccess}}><span style={{display: "flex"}}>{snapshotTakenBool? snapshotTaken.substring(0,5)+'...'+snapshotTaken.substring(snapshotTaken.length-4,snapshotTaken.length-1) : snapshotTaken}&nbsp;<a target="_blank" href={"https://blockscout.com/gnosis/chiado/tx/"+snapshotTaken}><FiExternalLink/></a></span></div></td>
         <td>
             <div style={{display: bridgeSuccess}}>✅</div>
           </td>
@@ -418,8 +480,8 @@ export default function Home() {
       {/* row 3 */}
       <tr className="hover">
       <th>Lightbulb 💡</th>
-        <td><img src='/icons/NetworkGnosis.svg'></img></td>
-        <td><div style={{display: relayed}}><span style={{display: "flex"}}>veascan<a target="_blank" href="https://veascan.io/"><FiExternalLink/></a></span></div></td>
+      <td><img src='/icons/NetworkGnosis.svg'></img></td>
+        <td><div style={{display: relayed}}><span style={{display: "flex"}}>{relayedTxBool? relayedTx.substring(0,5)+'...'+relayedTx.substring(relayedTx.length-4,relayedTx.length-1) : relayedTx}&nbsp;<a target="_blank" href={"https://blockscout.com/gnosis/chiado/tx/"+relayedTx}><FiExternalLink/></a></span></div></td>
         <td><div style={{display: relayed}}>✅</div>
 </td>
       </tr>

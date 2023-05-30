@@ -18,15 +18,19 @@ export default function PageDashboardTransaction() {
       <Accordion type="single" collapsible className="w-[90%]">
         <AccordionItem value="item-1">
           <AccordionTrigger>How does the Vea Bridge work?</AccordionTrigger>
-          <AccordionContent>Optimistic Bridging</AccordionContent>
+          <AccordionContent>Vea is an optimistic bridge which periodically aggregates sent messages, and bridges them together efficiently.</AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-2">
-          <AccordionTrigger>Why 24 hours?</AccordionTrigger>
-          <AccordionContent>Security </AccordionContent>
+          <AccordionTrigger>How fast is Vea?</AccordionTrigger>
+          <AccordionContent>This demo uses the devnet which is permissioned to achieve low latency for good developer experience. The devnet takes ~30 min to send messages.
+          <br></br><br></br>
+          The full testnet is permissionless and takes about half a day to send messages from Arbitrum. The full testnet is used for testing validators and is not recommended for developers.
+          </AccordionContent>
         </AccordionItem>
         <AccordionItem value="item-3">
-          <AccordionTrigger>Are messages authenticated?</AccordionTrigger>
-          <AccordionContent>Yes. Otherwise a relayer network would suffice.</AccordionContent>
+          <AccordionTrigger>Where can I learn more?</AccordionTrigger>
+          <AccordionContent>To learn more read the <a href="docs.vea.ninja">docs.</a><br></br><br></br>
+          Also watch the <a href = "https://www.youtube.com/watch?v=Pz8MitQoZAs">Eth Taipei talk</a> on Vea.</AccordionContent>
         </AccordionItem>
       </Accordion>
     </motion.div>

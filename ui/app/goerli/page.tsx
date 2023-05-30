@@ -135,7 +135,7 @@ export default function Home() {
         const epoch = Math.floor(switchTime / 1800)
         setSwitchEpoch(epoch)
         console.log('switch epoch is', epoch);
-        if (latestVerifiedEpoch >= epoch){
+        if (latestVerifiedEpoch > epoch){
           console.log('latest epoch', latestVerifiedEpoch);
           console.log('msg epoch', epoch);
           setveaBridgeConfirmation(true)

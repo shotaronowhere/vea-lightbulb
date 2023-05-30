@@ -32,7 +32,7 @@ export function UserDropdown() {
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full rounded-md p-2 ">
-            <Link className="user-dropdown-menu-item" href="/">
+            <Link className="user-dropdown-menu-item" href="/goerli">
               <BinaryIcon className="h-4 w-4" />
               <p className="text-sm">Goerli</p>
             </Link>
