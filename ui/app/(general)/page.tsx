@@ -68,7 +68,7 @@ export default function Home() {
 
     async onConnect({ address, connector, isReconnected }) {
       const lightBulbIsOn = await readContract({
-        address: '0xb525F403026DfE08ae0200834cBCAa27a56FD6A3',
+        address: '0x9685cd092e8620662365324694D69925C7d8822b',
         abi: [
           {
             inputs: [
@@ -96,7 +96,7 @@ export default function Home() {
       })
 
       const latestVerifiedEpoch = (await readContract({
-        address: '0xdFd7aDEb43d46FA3f16FB3e27F7fe85c3f5BD89D',
+        address: '0x9481b3A49ac67d03D9022E6200eFD81850BADDB4',
         abi: [
           {
             inputs:[],
@@ -204,7 +204,7 @@ export default function Home() {
 
   const unwatch = watchContractEvent(
     {
-      address: '0xdFd7aDEb43d46FA3f16FB3e27F7fe85c3f5BD89D',
+      address: '0x9481b3A49ac67d03D9022E6200eFD81850BADDB4',
       abi: abi,
       eventName: 'Verified',
       chainId: 10200,
@@ -274,7 +274,7 @@ export default function Home() {
     
     if (account) {
       const lightBulbIsOn = await readContract({
-        address: '0xb525F403026DfE08ae0200834cBCAa27a56FD6A3',
+        address: '0x9685cd092e8620662365324694D69925C7d8822b',
         abi: [
           {
             inputs: [
@@ -383,7 +383,7 @@ claims(first: 1, where:{epoch_gte: ${Math.floor(switchTime/1800)}}, orderBy: epo
   , [light, account.connector, time])
 
   const { config, error } = usePrepareContractWrite({
-    address: '0xcDCB9CebbD0182408bfcD910D9df216F760D376C',
+    address: '0x2Ecf85A39004bc66caE469473Da75215025da8E2',
     abi: [
       {
         inputs: [],

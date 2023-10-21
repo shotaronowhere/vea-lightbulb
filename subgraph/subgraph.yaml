@@ -3,12 +3,32 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum
+    name: SwitchChiado
+    network: arbitrum-goerli
+    source:
+      address: "0xf9DFd2B6b4967fD88B8f8F8cF753A459cf7028d3"
+      abi: Switch
+      startBlock: 49494061
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - lightBulbToggled
+      abis:
+        - name: Switch
+          file: ./abis/Switch.json
+      eventHandlers:
+        - event: lightBulbToggled(uint64,address)
+          handler: handlelightBulbToggled
+      file: ./src/switch.ts
+  - kind: ethereum
     name: Switch
     network: arbitrum-goerli
     source:
-      address: "0x0FEe56B014be6870415Ec2dD018Da6bD3E1D7d24"
+      address: "0x2Ecf85A39004bc66caE469473Da75215025da8E2"
       abi: Switch
-      startBlock: 19791397
+      startBlock: 49494061
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
