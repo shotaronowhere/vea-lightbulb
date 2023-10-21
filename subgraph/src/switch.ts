@@ -7,10 +7,10 @@ export function handlelightBulbToggled(event: lightBulbToggledEvent): void {
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
 
-  if (event.address.toHexString() != "0x2Ecf85A39004bc66caE469473Da75215025da8E2"){
-    entity.chainId = BigInt.fromU32(5)
-  } else {
+  if (event.address.toHexString() == "0x2ecf85a39004bc66cae469473da75215025da8e2"){
     entity.chainId = BigInt.fromU32(10200)
+  } else {
+    entity.chainId = BigInt.fromU32(5)
   }
 
   entity.messageId = event.params.messageId
